@@ -1,0 +1,21 @@
+//
+// FILE
+//  - IS GENERATED
+//  - SHOULD NOT BE MODIFIED
+//  - MAY BE OVERWRITTEN BY BIKE
+//
+// This file provides the glue so that the type definitions in
+// `lib.bikeTheme.d.js` are availible when you edit `index.js` in a compatible
+// editor such as VSCode.
+{
+    "include": [
+        "index.js",
+        "lib.bikeTheme.d.ts",
+    ],
+    "compilerOptions": {
+        "lib": ["ESNext"],
+        "allowJs": true,
+        "checkJs": true,
+        "noEmit": true,
+    }
+}
