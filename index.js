@@ -28,9 +28,9 @@
 function getCustomColors(isDarkMode) {
   if (isDarkMode) {
     return {
-      background: hexColor("#1a1e30"),
-      backgroundSecondary: hexColor("#121521"),
-      backgroundHighlight: hexColor("#9e6f01"), //Alpha 0.3
+      background: hexColor("#121521"),
+      backgroundSecondary: hexColor("#000000"), // Alpha 0.2
+      backgroundHighlight: hexColor("#9e6f01"), // Alpha 0.3
       text: hexColor("#d7dbea"),
       textSecondary: hexColor("#eef0f6"),
       textHeading: hexColor("#8ea6cd"),
@@ -42,9 +42,9 @@ function getCustomColors(isDarkMode) {
     };
   } else {
     return {
-      background: hexColor("#f8f9fb"),
-      backgroundSecondary: hexColor("#3e4a77"), //Alpha 0.1
-      backgroundHighlight: hexColor("#ffba19"), //Alpha 0.3
+      background: hexColor("#fcfcfd"),
+      backgroundSecondary: hexColor("#3e4a77"), // Alpha 0.08
+      backgroundHighlight: hexColor("#ffba19"), // Alpha 0.3
       text: hexColor("#3e4a77"),
       textSecondary: hexColor("#212840"),
       textHeading: hexColor("#597cb5"),
@@ -481,7 +481,11 @@ defineRowRule(".@type = code", (env, row) => {
     pre.width = layout.width.offset(10 * uiScale);
     pre.height = layout.height.offset(6 * uiScale);
     pre.corners.radius = 3 * uiScale;
-    pre.color = theme.colors.backgroundSecondary.withAlpha(0.1);
+    if (env.settings.isDarkMode) {
+      pre.color = theme.colors.backgroundSecondary.withAlpha(0.2);
+    } else {
+      pre.color = theme.colors.backgroundSecondary.withAlpha(0.08);
+    }
   });
 });
 
@@ -501,7 +505,11 @@ defineRunRule(".@code", (env, text) => {
     code.width = layout.width.offset(4 * uiScale);
     code.height = layout.height.offset(0.3 * uiScale);
     code.corners.radius = 3 * uiScale;
-    code.color = theme.colors.backgroundSecondary.withAlpha(0.1);
+    if (env.settings.isDarkMode) {
+      code.color = theme.colors.backgroundSecondary.withAlpha(0.2);
+    } else {
+      code.color = theme.colors.backgroundSecondary.withAlpha(0.08);
+    }
   });
 });
 
