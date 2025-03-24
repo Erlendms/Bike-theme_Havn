@@ -30,7 +30,7 @@ function getCustomColors(isDarkMode) {
     return {
       background: hexColor("#1a1e30"),
       backgroundSecondary: hexColor("#121521"),
-      backgroundHighlight: hexColor("#56294A"),
+      backgroundHighlight: hexColor("#9e6f01"), //Alpha 0.3
       text: hexColor("#d7dbea"),
       textSecondary: hexColor("#eef0f6"),
       textHeading: hexColor("#8ea6cd"),
@@ -43,11 +43,11 @@ function getCustomColors(isDarkMode) {
   } else {
     return {
       background: hexColor("#f8f9fb"),
-      backgroundSecondary: hexColor("#ebedf4"),
-      backgroundHighlight: hexColor("#F3E7F0"),
+      backgroundSecondary: hexColor("#3e4a77"), //Alpha 0.1
+      backgroundHighlight: hexColor("#ffba19"), //Alpha 0.3
       text: hexColor("#3e4a77"),
       textSecondary: hexColor("#212840"),
-      textHeading: hexColor("#6988bc"),
+      textHeading: hexColor("#597cb5"),
       textLinks: hexColor("#5C947b"),
       accent: hexColor("#386a51"),
       midBlue: hexColor("#97a1c8"),
@@ -240,6 +240,7 @@ defineRowRule(".parent() = true and collapsed() = true", (env, row) => {
   });
 });
 
+// Doesn't work.
 defineRowRule(".parent() = true/run::paragraph-focus()", (env, row) => {
   row.text.color = Color.systemRed();
 });
@@ -255,6 +256,7 @@ defineRowRule(".expanded() = true", (env, row) => {
   }
 });
 
+// Doesn't work?
 defineRowRule(".body empty() = true", (env, row) => {
   row.decoration("handle", (handle, _) => {
     handle.opacity = 0.0;
@@ -269,6 +271,7 @@ defineRowRule(".selection() = block", (env, row) => {
   });
 });
 
+// What does this do?
 defineRowRule(".selection() = none", (env, row) => {
   row.text.scale = 0.5;
 });
@@ -279,6 +282,21 @@ defineRowRule(".heading", (env, row) => {
   row.text.scale = 1.1;
   row.text.kerning = 0.2;
   row.text.color = theme.colors.textHeading;
+
+  row.decoration("handle", (handle, layout) => {
+    let smallerFont = row.text.font.withPointSize(
+      row.text.font.resolve(env).pointSize * 0.6,
+    );
+    handle.contents.image = symbolImage(
+      "triangle",
+      theme.colors.textHeading,
+      smallerFont,
+    );
+
+    if (env.isTyping && theme.hideControlsWhenTyping) {
+      handle.opacity = 0;
+    }
+  });
 });
 defineRowRule(".@type = heading and parent() = true", (env, row) => {
   row.text.decoration("focus", (focus, layout) => {
@@ -303,6 +321,7 @@ defineRowRule(
     });
   },
 );
+
 defineRowRule(".@type = heading and collapsed() = true", (env, row) => {
   let theme = resolveTheme(env);
   row.decoration("handle", (handle, _) => {
@@ -449,7 +468,10 @@ defineRunRule(".@emphasized", (env, text) => {
 defineRowRule(".@type = code", (env, row) => {
   let theme = resolveTheme(env);
   let uiScale = theme.uiScale;
-  row.text.font = row.text.font.withMonospace();
+  row.text.color = theme.colors.textSecondary;
+  row.text.font = row.text.font
+    .withMonospace()
+    .withPointSize(row.text.font.resolve(env).pointSize * 0.95);
   row.text.decoration("pre", (pre, layout) => {
     pre.zPosition = -1;
     pre.anchor.x = 0;
@@ -459,24 +481,27 @@ defineRowRule(".@type = code", (env, row) => {
     pre.width = layout.width.offset(10 * uiScale);
     pre.height = layout.height.offset(6 * uiScale);
     pre.corners.radius = 3 * uiScale;
-    pre.color = theme.colors.backgroundSecondary;
+    pre.color = theme.colors.backgroundSecondary.withAlpha(0.1);
   });
 });
 
 defineRunRule(".@code", (env, text) => {
   let theme = resolveTheme(env);
   let uiScale = theme.uiScale;
-  text.font = text.font.withMonospace();
+  text.color = theme.colors.textSecondary;
+  text.font = text.font
+    .withMonospace()
+    .withPointSize(text.font.resolve(env).pointSize * 0.95);
   text.decoration("code", (code, layout) => {
-    code.zPosition = -1;
+    code.zPosition = -2;
     code.anchor.x = 0;
     code.anchor.y = 0;
     code.x = layout.leading.offset(-2 * uiScale);
-    code.y = layout.top.offset(1 * uiScale);
+    code.y = layout.top.offset(0.1 * uiScale);
     code.width = layout.width.offset(4 * uiScale);
-    code.height = layout.height.offset(-2 * uiScale);
+    code.height = layout.height.offset(0.3 * uiScale);
     code.corners.radius = 3 * uiScale;
-    code.color = theme.colors.backgroundSecondary;
+    code.color = theme.colors.backgroundSecondary.withAlpha(0.1);
   });
 });
 
@@ -489,11 +514,11 @@ defineRunRule(".@highlight", (env, text) => {
     highlight.anchor.x = 0;
     highlight.anchor.y = 0;
     highlight.x = layout.leading.offset(-2 * uiScale);
-    highlight.y = layout.top.offset(1 * uiScale);
+    highlight.y = layout.top.offset(3 * uiScale);
     highlight.width = layout.width.offset(4 * uiScale);
     highlight.height = layout.height.offset(-2 * uiScale);
     highlight.corners.radius = 3 * uiScale;
-    highlight.color = theme.colors.backgroundHighlight;
+    highlight.color = theme.colors.backgroundHighlight.withAlpha(0.3);
   });
 });
 
